@@ -95,6 +95,7 @@ body { margin: 0; padding: 0; }
                 <option value="building">Buildings</option>
                 <option value="triangles">Triangles</option>
                 <option value="land">Land</option>
+                <option value="parks">Parks</option>
             </select>
         </fieldset>
         <fieldset>
@@ -108,13 +109,13 @@ body { margin: 0; padding: 0; }
 
 
 <script>
-	mapboxgl.accessToken = 'pk.eyJ1Ijoia211bm96IiwiYSI6ImNsdmRieDI5eDBzdzQyanFtMG1nazhoOGwifQ.Iqe7B_d2EfASq-FmpAvzog';
+	mapboxgl.accessToken = 'pk.eyJ1Ijoia211bm96IiwiYSI6ImNsY3A3NDloaDA2bnozcGxiN2U1Y2I2bWIifQ.WY4_mVStBm5c9CjvWsVy3w';
     const map = new mapboxgl.Map({
         container: 'map',
         // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-        style: 'mapbox://styles/mapbox/light-v11', // style URL for Mapbox Light
-        center: [12.338, 45.4385],
-        zoom: 18
+        style: 'mapbox://styles/kmunoz/clv912qkc00o301phcbmc6o5r', // style URL for Mapbox Light
+        center: [-73.992114, 40.733595],
+        zoom: 13
     });
 
     map.on('load', () => {

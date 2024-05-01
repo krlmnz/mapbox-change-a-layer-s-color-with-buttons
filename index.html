@@ -2,104 +2,84 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Change a layer's color with buttons</title>
-<!-- Default styling. Feel free to remove! -->
-<link href="https://api.mapbox.com/mapbox-assembly/v1.3.0/assembly.min.css" rel="stylesheet">
-<script id="search-js" defer="" src="https://api.mapbox.com/search-js/v1.0.0-beta.20/web.js"></script>
-
-
-
+<title>Add a geocoder</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
-<script defer src="https://api.mapbox.com/search-js/v1.0.0-beta.20/web.js"></script>
-
-
 <style>
 body { margin: 0; padding: 0; }
 #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-
 .map-overlay {
-        font:
-            12px/20px 'Helvetica Neue',
-            Arial,
-            Helvetica,
-            sans-serif;
-        position: absolute;
-        width: 200px;
-        top: 0;
-        left: 0;
-        padding: 10px;
-    }
-
-    .map-overlay .map-overlay-inner {
-        background-color: #fff;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        border-radius: 3px;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-
-    .map-overlay-inner fieldset {
-        border: none;
-        padding: 0;
-        margin: 0 0 10px;
-    }
-
-    .map-overlay-inner fieldset:last-child {
-        margin: 0;
-    }
-
-    .map-overlay-inner select {
-        width: 100%;
-    }
-
-    .map-overlay-inner label {
-        display: block;
-        font-weight: bold;
-        margin: 0 0 5px;
-    }
-
-    .map-overlay-inner button {
-        display: inline-block;
-        width: 36px;
-        height: 20px;
-        border: none;
-        cursor: pointer;
-    }
-
-    .map-overlay-inner button:focus {
-        outline: none;
-    }
-
-    .map-overlay-inner button:hover {
-        box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .map-search {
-    position: absolute; top: 10px; right: 10px; z-index: 1000; /* Increased z-index */
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    position: absolute;
+    width: 80%;
+    bottom: 0;
+    left: 0;
+    padding: 24px;
 }
-
+.map-overlay .map-overlay-inner {
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.map-overlay-inner fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 10px;
+    
+}
+.map-overlay-inner select {
+    
+    width: auto;
+    min-width: 200px;
+}
+.map-overlay-inner label {
+    display: block;
+    font-weight: bold;
+    margin: 0 0 5px;
+    
+}
+.map-overlay-inner button {
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    border: none;
+    cursor: pointer;
+    
+}
+.map-overlay-inner button:focus {
+    outline: none;
+}
+.map-overlay-inner button:hover {
+    box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
 </style>
 </head>
 <body>
+<!-- Load the `mapbox-gl-geocoder` plugin. -->
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
 
 <div id="map"></div>
+
 <div class="map-overlay top">
     <div class="map-overlay-inner">
         <fieldset>
             <label>Select layer</label>
             <select id="layer" name="layer">
-                <!-- Each value matches a layer ID. -->
                 <option value="water">Water</option>
-                <option value="building">Buildings</option>
-                <option value="triangles">Triangles</option>
-                <option value="land">Land</option>
+                <option value="buildsil">Buildings</option>
                 <option value="parks">Parks</option>
-		<option value="road-simple">Roads</option>
+                <option value="landuse">Land</option>
+                <option value="road-primary-k">road-primary</option>
+                <option value="road">road</option>
 
-		    
-		    
+
+                
+
+                
             </select>
         </fieldset>
         <fieldset>
@@ -109,67 +89,55 @@ body { margin: 0; padding: 0; }
     </div>
 </div>
 
-<div class="map-search" id="search"></div> <!-- Container for the search box -->
-
-
 <script>
+	// TO MAKE THE MAP APPEAR YOU MUST
+	// ADD YOUR ACCESS TOKEN FROM
+	// https://account.mapbox.com
 	mapboxgl.accessToken = 'pk.eyJ1Ijoia211bm96IiwiYSI6ImNsY3A3NDloaDA2bnozcGxiN2U1Y2I2bWIifQ.WY4_mVStBm5c9CjvWsVy3w';
     const map = new mapboxgl.Map({
         container: 'map',
-        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-        style: 'mapbox://styles/kmunoz/clvmx6a6c072r01nubqykclkv', // style URL for Mapbox Light
-        center: [-73.992114, 40.733595],
-        zoom: 13
+        style: 'mapbox://styles/kmunoz/clv912qkc00o301phcbmc6o5r',
+        center: [-73.965400, 40.754651],
+        zoom: 16.4
     });
 
-    map.on('load', () => {
-        // Add a custom layer that uses
-
-      
-        const searchBox = new MapboxSearchBox({
+    // Add the control to the map.
+    map.addControl(
+        new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
-            types: 'address,poi',
-            marker: true,
             mapboxgl: mapboxgl
-        });
-        document.getElementById('search').appendChild(searchBox.onAdd(map));
+        })
+    );
 
-        
-        // a vector tileset source.
+    map.on('load', function() {
+        // Add the triangles layer from the source
         map.addLayer({
             id: 'triangles',
             source: {
                 type: 'vector',
-                url: 'mapbox://examples.ckv9z0wgf5v7c27p7me2mf0l9-9wrve' // custom tileset
+                url: 'mapbox://examples.ckv9z0wgf5v7c27p7me2mf0l9-9wrve'
             },
             'source-layer': 'triangles',
             type: 'fill'
         });
-    });
 
-    const swatches = document.getElementById('swatches');
-    const layer = document.getElementById('layer');
-    const colors = [
-        '#ffffcc',
-        '#a1dab4',
-        '#41b6c4',
-        '#2c7fb8',
-        '#253494',
-        '#fed976',
-        '#feb24c',
-        '#fd8d3c',
-        '#f03b20',
-        '#bd0026'
-    ];
+        
+        const swatches = document.getElementById('swatches');
+        const layer = document.getElementById('layer');
+        const colors = [
+            '#eee', '#ddd', '#c4c4c4', '#ffffcc', '#a1dab4', '#41b6c4', '#2c7fb8', '#253494',
+            '#fed976', '#feb24c', '#fd8d3c', '#f03b20', '#bd0026'
+        ];
 
-    for (const color of colors) {
-        const swatch = document.createElement('button');
-        swatch.style.backgroundColor = color;
-        swatch.addEventListener('click', () => {
-            map.setPaintProperty(layer.value, 'fill-color', color);
+        colors.forEach(function(color) {
+            const swatch = document.createElement('button');
+            swatch.style.backgroundColor = color;
+            swatch.addEventListener('click', function() {
+                map.setPaintProperty(layer.value, 'fill-color', color);
+            });
+            swatches.appendChild(swatch);
         });
-        swatches.appendChild(swatch);
-    }
+    });
 </script>
 
 </body>

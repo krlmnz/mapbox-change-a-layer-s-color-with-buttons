@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Add a geocoder</title>
+    <title>Custom Mapbox</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
@@ -33,7 +33,7 @@
         }
         .map-overlay .map-overlay-inner {
             background-color: #fff;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            box-shadow: none;
             border-radius: 3px;
             padding: 10px;
             margin-bottom: 10px;
@@ -74,25 +74,21 @@
     </style>
 </head>
 <body>
-    <!-- Load the `mapbox-gl-geocoder` plugin. -->
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
 
     <div id="map"></div>
-
     <div id="geocoder-container"></div>
-
     <div class="map-overlay top">
         <div class="map-overlay-inner">
             <fieldset>
                 <label>Select layer</label>
                 <div id="layer-buttons">
+                    <button class="layer-button" data-layer="contour">Contour</button>
                     <button class="layer-button" data-layer="water">Water</button>
-                    <button class="layer-button" data-layer="buildings">Buildings</button>
+                    <button class="layer-button" data-layer="building">Buildings</button>
                     <button class="layer-button" data-layer="parks">Parks</button>
-                    <button class="layer-button" data-layer="landuse">Land</button>
-                    <button class="layer-button" data-layer="road-primary">Road - Primary</button>
-                    <button class="layer-button" data-layer="road">Road</button>
+                    <button class="layer-button" data-layer="road-simple">Road</button>
                 </div>
             </fieldset>
             <fieldset>
@@ -108,7 +104,7 @@
             container: 'map',
             style: 'mapbox://styles/kmunoz/clv912qkc00o301phcbmc6o5r',
             center: [-73.965400, 40.754651],
-            zoom: 16.4
+            zoom: 15
         });
 
         const geocoder = new MapboxGeocoder({
@@ -132,16 +128,6 @@
         });
 
         map.on('load', function() {
-            map.addLayer({
-                id: 'triangles',
-                source: {
-                    type: 'vector',
-                    url: 'mapbox://examples.ckv9z0wgf5v7c27p7me2mf0l9-9wrve'
-                },
-                'source-layer': 'triangles',
-                type: 'fill'
-            });
-
             const swatches = document.getElementById('swatches');
             const colors = [
                 '#eee', '#ddd', '#c4c4c4', '#ffffcc', '#a1dab4', '#41b6c4', '#2c7fb8', '#253494',
@@ -155,13 +141,15 @@
                 swatch.style.backgroundColor = color;
                 swatch.addEventListener('click', () => {
                     if (selectedLayer) {
-                        map.setPaintProperty(selectedLayer.getAttribute('data-layer'), 'fill-color', color);
+                        const layerId = selectedLayer.getAttribute('data-layer');
+                        const layerType = map.getLayer(layerId).type;
+                        const paintProperty = layerType === 'line' ? 'line-color' : 'fill-color';
+                        map.setPaintProperty(layerId, paintProperty, color);
                     }
                 });
                 swatches.appendChild(swatch);
             });
         });
     </script>
-
 </body>
 </html>

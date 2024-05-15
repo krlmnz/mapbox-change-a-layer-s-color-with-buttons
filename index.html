@@ -3,19 +3,33 @@
 <head>
 <meta charset="utf-8">
 <title>Add a geocoder</title>
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
 <style>
 body { margin: 0; padding: 0; }
 #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+#geocoder-container {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+.mapboxgl-ctrl-geocoder {
+    width: 100%;
+    max-width: none;
+}
 .map-overlay {
     font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     position: absolute;
-    width: 80%;
+    width: 100%;
     bottom: 0;
     left: 0;
-    padding: 24px;
+    padding: 10px;
+    box-sizing: border-box;
 }
 .map-overlay .map-overlay-inner {
     background-color: #fff;
@@ -28,18 +42,19 @@ body { margin: 0; padding: 0; }
     border: none;
     padding: 0;
     margin: 0 0 10px;
-    
 }
-.map-overlay-inner select {
-    
-    width: auto;
-    min-width: 200px;
+.map-overlay-inner .layer-button {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 2px;
+    border: none;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border-radius: 3px;
 }
-.map-overlay-inner label {
-    display: block;
-    font-weight: bold;
-    margin: 0 0 5px;
-    
+.map-overlay-inner .layer-button.selected {
+    background-color: #007bff;
+    color: white;
 }
 .map-overlay-inner button {
     display: inline-block;
@@ -47,7 +62,7 @@ body { margin: 0; padding: 0; }
     height: 20px;
     border: none;
     cursor: pointer;
-    
+    margin: 2px;
 }
 .map-overlay-inner button:focus {
     outline: none;
@@ -64,23 +79,20 @@ body { margin: 0; padding: 0; }
 
 <div id="map"></div>
 
+<div id="geocoder-container"></div>
+
 <div class="map-overlay top">
     <div class="map-overlay-inner">
         <fieldset>
             <label>Select layer</label>
-            <select id="layer" name="layer">
-                <option value="water">Water</option>
-                <option value="buildsil">Buildings</option>
-                <option value="parks">Parks</option>
-                <option value="landuse">Land</option>
-                <option value="road-primary-k">road-primary</option>
-                <option value="road">road</option>
-
-
-                
-
-                
-            </select>
+            <div id="layer-buttons">
+                <button class="layer-button" data-layer="water">Water</button>
+                <button class="layer-button" data-layer="buildings">Buildings</button>
+                <button class="layer-button" data-layer="parks">Parks</button>
+                <button class="layer-button" data-layer="landuse">Land</button>
+                <button class="layer-button" data-layer="road-primary">Road - Primary</button>
+                <button class="layer-button" data-layer="road">Road</button>
+            </div>
         </fieldset>
         <fieldset>
             <label>Choose a color</label>
@@ -90,10 +102,7 @@ body { margin: 0; padding: 0; }
 </div>
 
 <script>
-	// TO MAKE THE MAP APPEAR YOU MUST
-	// ADD YOUR ACCESS TOKEN FROM
-	// https://account.mapbox.com
-	mapboxgl.accessToken = 'pk.eyJ1Ijoia211bm96IiwiYSI6ImNsY3A3NDloaDA2bnozcGxiN2U1Y2I2bWIifQ.WY4_mVStBm5c9CjvWsVy3w';
+    mapboxgl.accessToken = 'pk.eyJ1Ijoia211bm96IiwiYSI6ImNsY3A3NDloaDA2bnozcGxiN2U1Y2I2bWIifQ.WY4_mVStBm5c9CjvWsVy3w';
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/kmunoz/clv912qkc00o301phcbmc6o5r',
@@ -101,16 +110,27 @@ body { margin: 0; padding: 0; }
         zoom: 16.4
     });
 
-    // Add the control to the map.
-    map.addControl(
-        new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl
-        })
-    );
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl
+    });
+
+    document.getElementById('geocoder-container').appendChild(geocoder.onAdd(map));
+
+    const layerButtons = document.querySelectorAll('.layer-button');
+    let selectedLayer = null;
+
+    layerButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (selectedLayer) {
+                selectedLayer.classList.remove('selected');
+            }
+            button.classList.add('selected');
+            selectedLayer = button;
+        });
+    });
 
     map.on('load', function() {
-        // Add the triangles layer from the source
         map.addLayer({
             id: 'triangles',
             source: {
@@ -121,19 +141,19 @@ body { margin: 0; padding: 0; }
             type: 'fill'
         });
 
-        
         const swatches = document.getElementById('swatches');
-        const layer = document.getElementById('layer');
         const colors = [
             '#eee', '#ddd', '#c4c4c4', '#ffffcc', '#a1dab4', '#41b6c4', '#2c7fb8', '#253494',
             '#fed976', '#feb24c', '#fd8d3c', '#f03b20', '#bd0026'
         ];
 
-        colors.forEach(function(color) {
+        colors.forEach(color => {
             const swatch = document.createElement('button');
             swatch.style.backgroundColor = color;
-            swatch.addEventListener('click', function() {
-                map.setPaintProperty(layer.value, 'fill-color', color);
+            swatch.addEventListener('click', () => {
+                if (selectedLayer) {
+                    map.setPaintProperty(selectedLayer.getAttribute('data-layer'), 'fill-color', color);
+                }
             });
             swatches.appendChild(swatch);
         });

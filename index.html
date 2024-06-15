@@ -95,6 +95,20 @@
                 <label>Choose a color</label>
                 <div id="swatches"></div>
             </fieldset>
+            <fieldset>
+                <label>Zoom Level</label>
+                <input type="number" id="zoom-level" value="15" step="0.1" min="0" max="22">
+                <label>Image Width</label>
+                <input type="number" id="img-width" value="800">
+                <label>Image Height</label>
+                <input type="number" id="img-height" value="600">
+                <label>File Type</label>
+                <select id="file-type">
+                    <option value="png">PNG</option>
+                    <option value="jpg">JPG</option>
+                </select>
+                <button id="export-map">Export Map</button>
+            </fieldset>
         </div>
     </div>
 
@@ -149,6 +163,37 @@
                 });
                 swatches.appendChild(swatch);
             });
+        });
+
+        // Get current location and set as default map center
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const { longitude, latitude } = position.coords;
+                map.setCenter([longitude, latitude]);
+            });
+        }
+
+        // Update map zoom level as user changes the input
+        document.getElementById('zoom-level').addEventListener('input', function() {
+            const zoomLevel = parseFloat(this.value);
+            map.setZoom(zoomLevel);
+        });
+
+        document.getElementById('export-map').addEventListener('click', () => {
+            const center = map.getCenter();
+            const zoomLevel = map.getZoom();
+            const imgWidth = document.getElementById('img-width').value;
+            const imgHeight = document.getElementById('img-height').value;
+            const fileType = document.getElementById('file-type').value;
+
+            const url = `https://api.mapbox.com/styles/v1/kmunoz/clv912qkc00o301phcbmc6o5r/static/${center.lng},${center.lat},${zoomLevel},0,0/${imgWidth}x${imgHeight}?access_token=${mapboxgl.accessToken}&format=${fileType}`;
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `map.${fileType}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
     </script>
 </body>

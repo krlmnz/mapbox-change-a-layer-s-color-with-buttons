@@ -1,30 +1,117 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <title>Custom Color Map</title>
+    <title>Custom Mapbox</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
+        type="text/css">
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js">
+    </script>
     <style>
-        body { margin: 0; padding: 0; }
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-        #geocoder-container { position: absolute; top: 10px; left: 0; right: 0; width: 100%; padding: 0 10px; box-sizing: border-box; }
-        .mapboxgl-ctrl-geocoder { width: 100%; max-width: none; }
-        .map-overlay { font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif; position: absolute; width: 100%; bottom: 0; left: 0; padding: 10px; box-sizing: border-box; }
-        .map-overlay .map-overlay-inner { background-color: #fff; box-shadow: none; border-radius: 3px; padding: 10px; margin-bottom: 10px; }
-        .map-overlay-inner fieldset { border: none; padding: 0; margin: 0 0 10px; }
-        .swatch-button { width: 64px; height: 40px; border: 2px solid transparent; cursor: pointer; border-radius: 6px; box-shadow: 0px 2px 3px -1px rgba(16, 24, 40, 0.03); margin: 4px; }
-        .swatch-button.selected { border-color: #007bff; }
-        .layer-container { display: inline-flex; flex-direction: column; align-items: center; margin: 8px; }
-        .layer-name { font-size: 12px; color: #101828; font-weight: 500; text-align: center; margin-top: 4px; }
-        #swatches { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
-        #swatches button { width: 24px; height: 24px; border: none; cursor: pointer; border-radius: 50%; }
-        #color-picker { width: 100%; margin-top: 10px; display: none; }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #geocoder-container {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            right: 0;
+            width: 100%;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .mapboxgl-ctrl-geocoder {
+            width: 100%;
+            max-width: none;
+        }
+
+        .map-overlay {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .map-overlay .map-overlay-inner {
+            background-color: #fff;
+            box-shadow: none;
+            border-radius: 3px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .map-overlay-inner fieldset {
+            border: none;
+            padding: 0;
+            margin: 0 0 10px;
+        }
+
+        .swatch-button {
+            width: 64px;
+            height: 40px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            border-radius: 6px;
+            box-shadow: 0px 2px 3px -1px rgba(16, 24, 40, 0.03);
+            margin: 4px;
+        }
+
+        .swatch-button.selected {
+            border-color: #007bff;
+        }
+
+        .layer-container {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 8px;
+        }
+
+        .layer-name {
+            font-size: 12px;
+            color: #101828;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        #swatches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        #swatches button {
+            width: 24px;
+            height: 24px;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+     
     </style>
 </head>
+
 <body>
 
     <div id="map"></div>
@@ -38,9 +125,9 @@
             <fieldset>
                 <label>Choose a color</label>
                 <div id="swatches"></div>
-                <input type="color" id="color-picker">
+                
             </fieldset>
-            <button id="save-map-button">Save Map as PNG</button>
+            <button id="save-map-button">Download Map as PNG</button>
         </div>
     </div>
 
@@ -102,6 +189,7 @@
 
                 colorPicker.value = rgbToHex(currentColor);
                 colorPicker.style.display = 'block';
+                colorPicker.click();
             });
 
             const layerName = document.createElement('div');
@@ -115,7 +203,7 @@
             updateLayerButtonColor(layer.id, '#ffffff'); // Default color until the map loads
         });
 
-        map.on('load', function() {
+        map.on('load', function () {
             layerInfo.forEach(layer => {
                 const layerType = map.getLayer(layer.id).type;
                 const paintProperty = layerType === 'line' ? 'line-color' : 'fill-color';
@@ -172,18 +260,19 @@
         }
 
         function saveMapAsPNG() {
-            map.once('render', function() {
+            map.once('render', function () {
                 const canvas = map.getCanvas();
-                const dataURL = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
-                link.href = dataURL;
-                link.download = 'map.png';
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'custom_map.png';
                 link.click();
             });
-            map.resize();
+            map.triggerRepaint();
         }
 
         document.getElementById('save-map-button').addEventListener('click', saveMapAsPNG);
     </script>
+
 </body>
+
 </html>

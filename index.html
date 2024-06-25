@@ -36,8 +36,7 @@
         }
 
         .mapboxgl-ctrl-geocoder {
-            width: 100%;
-            max-width: none;
+            width: auto;
         }
 
         .map-overlay {
@@ -46,43 +45,50 @@
             width: 100%;
             bottom: 0;
             left: 0;
-            padding: 10px;
+            padding: 8px;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: left;
         }
 
         .map-overlay .map-overlay-inner {
-            background-color: #fff;
             box-shadow: none;
             border-radius: 3px;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+            column-gap: 32px;
+            background: #fff;
         }
 
         .map-overlay-inner fieldset {
             border: none;
             padding: 0;
-            margin: 0 0 10px;
         }
 
         .swatch-button {
             width: 64px;
             height: 40px;
-            border: 2px solid transparent;
             cursor: pointer;
-            border-radius: 6px;
-            box-shadow: 0px 2px 3px -1px rgba(16, 24, 40, 0.03);
-            margin: 4px;
-        }
-
-        .swatch-button.selected {
-            border-color: #007bff;
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #000;
         }
 
         .layer-container {
-            display: inline-flex;
+            display: flex;
             flex-direction: column;
             align-items: center;
             margin: 8px;
+            border: 2px solid #000;
+            border-radius: 6px;
+            overflow: auto;
+        }
+
+        .layer-container.selected {
+            border: 2px solid #007bff;
         }
 
         .layer-name {
@@ -96,19 +102,42 @@
         #swatches {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
-            margin-top: 10px;
+            gap: 8px;
+            margin-top: 8px;
         }
 
         #swatches button {
-            width: 24px;
-            height: 24px;
-            border: none;
             cursor: pointer;
-            border-radius: 50%;
+            width: 64px;
+            height: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid #000;
+            border-radius: 6px;
         }
 
-     
+        .utility-container {
+            padding: .5rem;
+            background: #fff;
+            bottom: 0;
+        }
+        .utility-container button {
+             height: 40px;
+            border: none;
+           
+            color: none;
+        }
+        }
+
+        button {
+            height: 40px;
+            border: 2px solid #000;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #101828;
+        }
     </style>
 </head>
 
@@ -118,16 +147,123 @@
     <div id="geocoder-container"></div>
     <div class="map-overlay top">
         <div class="map-overlay-inner">
-            <fieldset>
-                <label>Select layer</label>
-                <div id="layer-buttons" style="display: flex; flex-wrap: wrap;"></div>
-            </fieldset>
-            <fieldset>
-                <label>Choose a color</label>
-                <div id="swatches"></div>
-                
-            </fieldset>
+            <div id="layer-buttons" style="display: flex; flex-wrap: wrap;"></div>
+        </div>
+        <div class="map-overlay-inner">
+            <div id="swatches"></div>
+        </div>
+        <div class="utility-container">
             <button id="save-map-button">Download Map as PNG</button>
+        </div>
+        <div class="utility-container">
+            <button onclick="applyTheme('light-gray-canvas')"><svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="54" height="54" fill="#F2E9D1"/>
+<g clip-path="url(#clip0_19_770)">
+<path d="M4.92487 19.0841L21.27 18.5135L23.2989 19.9981L18.2257 28.4476L4.69932 22.7388L4.92487 19.0841Z" fill="#A9D8B6"/>
+<path d="M48.397 3.3265L43.098 0.164372L40.8452 3.77576L48.397 8.61006L48.397 3.3265Z" fill="#A9D8B6"/>
+<path d="M2.81127 55.9723C4.19072 56.7647 5.69674 57.1448 6.79733 57.0084C7.62068 56.9063 8.53654 56.6321 9.03052 55.9561C9.34846 55.5205 9.49194 54.969 9.42961 54.3564C9.37483 53.8162 9.11904 52.3433 7.71435 52.1368C7.49133 52.1039 7.29742 52.1186 7.11095 52.1367C5.89542 52.2559 4.80524 52.5151 3.73172 52.7778C2.76213 53.0149 1.85077 53.3259 1.45532 53.9971C1.118 54.5702 1.6504 55.3055 2.81127 55.9723Z" fill="#A9D8B6"/>
+<path d="M54.0081 42.1453C55.5899 45.6302 55.944 49.0616 55.0301 51.2505C54.3463 52.888 53.1309 54.5859 50.9804 55.0953C49.5947 55.4227 47.9647 55.2974 46.2603 54.6961C44.7571 54.1662 40.7099 52.4997 40.7988 49.413C40.8991 45.8532 45.1761 38.3722 49.0663 37.7992C50.8505 37.5372 52.6771 39.2127 54.0081 42.1453Z" fill="#A9D8B6"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M43.0425 7.48852L36.1917 3.10297L35.0988 4.85494L41.9496 9.24049L43.0425 7.48852ZM34.6165 5.77141L41.4673 10.157L40.3744 11.9089L33.5236 7.52338L34.6165 5.77141ZM44.7439 8.36365L52.1484 13.1037L49.3081 17.6569L41.9035 12.9168L44.7439 8.36365ZM34.7219 14.1466L28.241 9.99776L25.3665 14.7135L31.7902 18.8463L34.7219 14.1466ZM23.329 31.8648L28.4593 23.5181L34.6389 27.4159L26.9824 40.4478L26.0882 39.8645L23.329 31.8648ZM39.4206 29.405L43.0596 31.9063L41.5493 34.4509L37.9103 31.9495L39.4206 29.405ZM41.0882 35.3121L37.4492 32.8108L35.9389 35.3553L39.578 37.8566L41.0882 35.3121ZM35.478 36.2165L39.117 38.7178L37.6068 41.2623L33.9678 38.761L35.478 36.2165ZM37.1458 42.1236L33.5068 39.6222L31.9966 42.1668L35.6356 44.6681L37.1458 42.1236ZM31.5357 43.028L35.1747 45.5293L33.6644 48.0738L30.0254 45.5725L31.5357 43.028ZM59 29.659L49.4789 23.564L46.6385 28.1171L56.1597 34.2121L59 29.659ZM1.4731 38.6847L8.07828 37.5277L8.74151 41.4133L2.13632 42.5703L1.4731 38.6847ZM6.48973 42.9236L-0.863892 44.2117L-0.0800325 48.804L7.27359 47.516L6.48973 42.9236ZM11.158 54.7542L16.7635 53.7723L17.5643 58.4819L11.9588 59.4637L11.158 54.7542ZM20.6742 55.1238L18.4495 55.5135L19.2911 60.4445L21.5159 60.0548L20.6742 55.1238ZM10.5739 50.9223L16.1794 49.9405L16.6103 52.4646L11.0048 53.4465L10.5739 50.9223ZM13.1933 41.753L7.43286 42.7619L7.95474 45.8194L13.7151 44.8104L13.1933 41.753ZM33.1539 19.7053L39.3186 23.67L44.6979 20.5067L36.0861 15.0058L33.1539 19.7053Z" fill="#F2E9D1"/>
+<path d="M36.4537 60.2134C36.4537 60.2134 30.2306 56.2852 26.8326 54.1416C24.0489 52.3848 20.9943 50.7062 19.4177 47.6406C17.8955 44.6817 18.3398 41.0902 16.7587 38.1589C12.6212 30.4919 4.47529 37.486 -5 24.5343" stroke="#9FC9EA" stroke-width="4.50406" stroke-miterlimit="10"/>
+<path d="M3.3977 5.30361C3.81936 7.96405 5.61656 10.1856 8.06987 11.2259C18.6531 15.7113 29.7843 6.35129 16.652 2.3711C14.2822 1.6528 2.56442 0.0458454 3.3977 5.30361Z" fill="#9FC9EA"/>
+<path d="M29.0223 3.77122L21.8332 15.8876L1.31818 15.6591" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M56.1644 37.5062L21.8333 15.8876" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M56.1003 24.7941L27.6656 6.81461" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M57.3401 16.2298L39.1916 26.6208" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M46.1805 30.8461L34.2319 51.5145" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M38.6295 26.2763L26.6809 46.9448" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M27.4688 19.0841L20.0301 31.5339L24.8766 45.234L46.9589 59.3133" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M20.0301 31.5339L1.09275 24.1086L1.46362 14.9828" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M25.5722 45.582L-3.97073 52.2679" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+</g>
+<defs>
+<clipPath id="clip0_19_770">
+<rect width="54" height="54" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</button>
+            <button onclick="applyTheme('world-topographic-map')"><svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="54" height="54" fill="#F2E9D1"/>
+<g clip-path="url(#clip0_19_770)">
+<path d="M4.92487 19.0841L21.27 18.5135L23.2989 19.9981L18.2257 28.4476L4.69932 22.7388L4.92487 19.0841Z" fill="#A9D8B6"/>
+<path d="M48.397 3.3265L43.098 0.164372L40.8452 3.77576L48.397 8.61006L48.397 3.3265Z" fill="#A9D8B6"/>
+<path d="M2.81127 55.9723C4.19072 56.7647 5.69674 57.1448 6.79733 57.0084C7.62068 56.9063 8.53654 56.6321 9.03052 55.9561C9.34846 55.5205 9.49194 54.969 9.42961 54.3564C9.37483 53.8162 9.11904 52.3433 7.71435 52.1368C7.49133 52.1039 7.29742 52.1186 7.11095 52.1367C5.89542 52.2559 4.80524 52.5151 3.73172 52.7778C2.76213 53.0149 1.85077 53.3259 1.45532 53.9971C1.118 54.5702 1.6504 55.3055 2.81127 55.9723Z" fill="#A9D8B6"/>
+<path d="M54.0081 42.1453C55.5899 45.6302 55.944 49.0616 55.0301 51.2505C54.3463 52.888 53.1309 54.5859 50.9804 55.0953C49.5947 55.4227 47.9647 55.2974 46.2603 54.6961C44.7571 54.1662 40.7099 52.4997 40.7988 49.413C40.8991 45.8532 45.1761 38.3722 49.0663 37.7992C50.8505 37.5372 52.6771 39.2127 54.0081 42.1453Z" fill="#A9D8B6"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M43.0425 7.48852L36.1917 3.10297L35.0988 4.85494L41.9496 9.24049L43.0425 7.48852ZM34.6165 5.77141L41.4673 10.157L40.3744 11.9089L33.5236 7.52338L34.6165 5.77141ZM44.7439 8.36365L52.1484 13.1037L49.3081 17.6569L41.9035 12.9168L44.7439 8.36365ZM34.7219 14.1466L28.241 9.99776L25.3665 14.7135L31.7902 18.8463L34.7219 14.1466ZM23.329 31.8648L28.4593 23.5181L34.6389 27.4159L26.9824 40.4478L26.0882 39.8645L23.329 31.8648ZM39.4206 29.405L43.0596 31.9063L41.5493 34.4509L37.9103 31.9495L39.4206 29.405ZM41.0882 35.3121L37.4492 32.8108L35.9389 35.3553L39.578 37.8566L41.0882 35.3121ZM35.478 36.2165L39.117 38.7178L37.6068 41.2623L33.9678 38.761L35.478 36.2165ZM37.1458 42.1236L33.5068 39.6222L31.9966 42.1668L35.6356 44.6681L37.1458 42.1236ZM31.5357 43.028L35.1747 45.5293L33.6644 48.0738L30.0254 45.5725L31.5357 43.028ZM59 29.659L49.4789 23.564L46.6385 28.1171L56.1597 34.2121L59 29.659ZM1.4731 38.6847L8.07828 37.5277L8.74151 41.4133L2.13632 42.5703L1.4731 38.6847ZM6.48973 42.9236L-0.863892 44.2117L-0.0800325 48.804L7.27359 47.516L6.48973 42.9236ZM11.158 54.7542L16.7635 53.7723L17.5643 58.4819L11.9588 59.4637L11.158 54.7542ZM20.6742 55.1238L18.4495 55.5135L19.2911 60.4445L21.5159 60.0548L20.6742 55.1238ZM10.5739 50.9223L16.1794 49.9405L16.6103 52.4646L11.0048 53.4465L10.5739 50.9223ZM13.1933 41.753L7.43286 42.7619L7.95474 45.8194L13.7151 44.8104L13.1933 41.753ZM33.1539 19.7053L39.3186 23.67L44.6979 20.5067L36.0861 15.0058L33.1539 19.7053Z" fill="#F2E9D1"/>
+<path d="M36.4537 60.2134C36.4537 60.2134 30.2306 56.2852 26.8326 54.1416C24.0489 52.3848 20.9943 50.7062 19.4177 47.6406C17.8955 44.6817 18.3398 41.0902 16.7587 38.1589C12.6212 30.4919 4.47529 37.486 -5 24.5343" stroke="#9FC9EA" stroke-width="4.50406" stroke-miterlimit="10"/>
+<path d="M3.3977 5.30361C3.81936 7.96405 5.61656 10.1856 8.06987 11.2259C18.6531 15.7113 29.7843 6.35129 16.652 2.3711C14.2822 1.6528 2.56442 0.0458454 3.3977 5.30361Z" fill="#9FC9EA"/>
+<path d="M29.0223 3.77122L21.8332 15.8876L1.31818 15.6591" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M56.1644 37.5062L21.8333 15.8876" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M56.1003 24.7941L27.6656 6.81461" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M57.3401 16.2298L39.1916 26.6208" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M46.1805 30.8461L34.2319 51.5145" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M38.6295 26.2763L26.6809 46.9448" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M27.4688 19.0841L20.0301 31.5339L24.8766 45.234L46.9589 59.3133" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M20.0301 31.5339L1.09275 24.1086L1.46362 14.9828" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M25.5722 45.582L-3.97073 52.2679" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+</g>
+<defs>
+<clipPath id="clip0_19_770">
+<rect width="54" height="54" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</button>
+            <button onclick="applyTheme('light-gray-canvas-alt')"><svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="54" height="54" fill="#F2E9D1"/>
+<g clip-path="url(#clip0_19_770)">
+<path d="M4.92487 19.0841L21.27 18.5135L23.2989 19.9981L18.2257 28.4476L4.69932 22.7388L4.92487 19.0841Z" fill="#A9D8B6"/>
+<path d="M48.397 3.3265L43.098 0.164372L40.8452 3.77576L48.397 8.61006L48.397 3.3265Z" fill="#A9D8B6"/>
+<path d="M2.81127 55.9723C4.19072 56.7647 5.69674 57.1448 6.79733 57.0084C7.62068 56.9063 8.53654 56.6321 9.03052 55.9561C9.34846 55.5205 9.49194 54.969 9.42961 54.3564C9.37483 53.8162 9.11904 52.3433 7.71435 52.1368C7.49133 52.1039 7.29742 52.1186 7.11095 52.1367C5.89542 52.2559 4.80524 52.5151 3.73172 52.7778C2.76213 53.0149 1.85077 53.3259 1.45532 53.9971C1.118 54.5702 1.6504 55.3055 2.81127 55.9723Z" fill="#A9D8B6"/>
+<path d="M54.0081 42.1453C55.5899 45.6302 55.944 49.0616 55.0301 51.2505C54.3463 52.888 53.1309 54.5859 50.9804 55.0953C49.5947 55.4227 47.9647 55.2974 46.2603 54.6961C44.7571 54.1662 40.7099 52.4997 40.7988 49.413C40.8991 45.8532 45.1761 38.3722 49.0663 37.7992C50.8505 37.5372 52.6771 39.2127 54.0081 42.1453Z" fill="#A9D8B6"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M43.0425 7.48852L36.1917 3.10297L35.0988 4.85494L41.9496 9.24049L43.0425 7.48852ZM34.6165 5.77141L41.4673 10.157L40.3744 11.9089L33.5236 7.52338L34.6165 5.77141ZM44.7439 8.36365L52.1484 13.1037L49.3081 17.6569L41.9035 12.9168L44.7439 8.36365ZM34.7219 14.1466L28.241 9.99776L25.3665 14.7135L31.7902 18.8463L34.7219 14.1466ZM23.329 31.8648L28.4593 23.5181L34.6389 27.4159L26.9824 40.4478L26.0882 39.8645L23.329 31.8648ZM39.4206 29.405L43.0596 31.9063L41.5493 34.4509L37.9103 31.9495L39.4206 29.405ZM41.0882 35.3121L37.4492 32.8108L35.9389 35.3553L39.578 37.8566L41.0882 35.3121ZM35.478 36.2165L39.117 38.7178L37.6068 41.2623L33.9678 38.761L35.478 36.2165ZM37.1458 42.1236L33.5068 39.6222L31.9966 42.1668L35.6356 44.6681L37.1458 42.1236ZM31.5357 43.028L35.1747 45.5293L33.6644 48.0738L30.0254 45.5725L31.5357 43.028ZM59 29.659L49.4789 23.564L46.6385 28.1171L56.1597 34.2121L59 29.659ZM1.4731 38.6847L8.07828 37.5277L8.74151 41.4133L2.13632 42.5703L1.4731 38.6847ZM6.48973 42.9236L-0.863892 44.2117L-0.0800325 48.804L7.27359 47.516L6.48973 42.9236ZM11.158 54.7542L16.7635 53.7723L17.5643 58.4819L11.9588 59.4637L11.158 54.7542ZM20.6742 55.1238L18.4495 55.5135L19.2911 60.4445L21.5159 60.0548L20.6742 55.1238ZM10.5739 50.9223L16.1794 49.9405L16.6103 52.4646L11.0048 53.4465L10.5739 50.9223ZM13.1933 41.753L7.43286 42.7619L7.95474 45.8194L13.7151 44.8104L13.1933 41.753ZM33.1539 19.7053L39.3186 23.67L44.6979 20.5067L36.0861 15.0058L33.1539 19.7053Z" fill="#F2E9D1"/>
+<path d="M36.4537 60.2134C36.4537 60.2134 30.2306 56.2852 26.8326 54.1416C24.0489 52.3848 20.9943 50.7062 19.4177 47.6406C17.8955 44.6817 18.3398 41.0902 16.7587 38.1589C12.6212 30.4919 4.47529 37.486 -5 24.5343" stroke="#9FC9EA" stroke-width="4.50406" stroke-miterlimit="10"/>
+<path d="M3.3977 5.30361C3.81936 7.96405 5.61656 10.1856 8.06987 11.2259C18.6531 15.7113 29.7843 6.35129 16.652 2.3711C14.2822 1.6528 2.56442 0.0458454 3.3977 5.30361Z" fill="#9FC9EA"/>
+<path d="M29.0223 3.77122L21.8332 15.8876L1.31818 15.6591" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M56.1644 37.5062L21.8333 15.8876" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M56.1003 24.7941L27.6656 6.81461" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M57.3401 16.2298L39.1916 26.6208" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M46.1805 30.8461L34.2319 51.5145" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M38.6295 26.2763L26.6809 46.9448" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M27.4688 19.0841L20.0301 31.5339L24.8766 45.234L46.9589 59.3133" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M20.0301 31.5339L1.09275 24.1086L1.46362 14.9828" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M25.5722 45.582L-3.97073 52.2679" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+</g>
+<defs>
+<clipPath id="clip0_19_770">
+<rect width="54" height="54" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</button>
+            <button onclick="applyTheme('world-navigation-map')"><svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="54" height="54" fill="#F2E9D1"/>
+<g clip-path="url(#clip0_19_770)">
+<path d="M4.92487 19.0841L21.27 18.5135L23.2989 19.9981L18.2257 28.4476L4.69932 22.7388L4.92487 19.0841Z" fill="#A9D8B6"/>
+<path d="M48.397 3.3265L43.098 0.164372L40.8452 3.77576L48.397 8.61006L48.397 3.3265Z" fill="#A9D8B6"/>
+<path d="M2.81127 55.9723C4.19072 56.7647 5.69674 57.1448 6.79733 57.0084C7.62068 56.9063 8.53654 56.6321 9.03052 55.9561C9.34846 55.5205 9.49194 54.969 9.42961 54.3564C9.37483 53.8162 9.11904 52.3433 7.71435 52.1368C7.49133 52.1039 7.29742 52.1186 7.11095 52.1367C5.89542 52.2559 4.80524 52.5151 3.73172 52.7778C2.76213 53.0149 1.85077 53.3259 1.45532 53.9971C1.118 54.5702 1.6504 55.3055 2.81127 55.9723Z" fill="#A9D8B6"/>
+<path d="M54.0081 42.1453C55.5899 45.6302 55.944 49.0616 55.0301 51.2505C54.3463 52.888 53.1309 54.5859 50.9804 55.0953C49.5947 55.4227 47.9647 55.2974 46.2603 54.6961C44.7571 54.1662 40.7099 52.4997 40.7988 49.413C40.8991 45.8532 45.1761 38.3722 49.0663 37.7992C50.8505 37.5372 52.6771 39.2127 54.0081 42.1453Z" fill="#A9D8B6"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M43.0425 7.48852L36.1917 3.10297L35.0988 4.85494L41.9496 9.24049L43.0425 7.48852ZM34.6165 5.77141L41.4673 10.157L40.3744 11.9089L33.5236 7.52338L34.6165 5.77141ZM44.7439 8.36365L52.1484 13.1037L49.3081 17.6569L41.9035 12.9168L44.7439 8.36365ZM34.7219 14.1466L28.241 9.99776L25.3665 14.7135L31.7902 18.8463L34.7219 14.1466ZM23.329 31.8648L28.4593 23.5181L34.6389 27.4159L26.9824 40.4478L26.0882 39.8645L23.329 31.8648ZM39.4206 29.405L43.0596 31.9063L41.5493 34.4509L37.9103 31.9495L39.4206 29.405ZM41.0882 35.3121L37.4492 32.8108L35.9389 35.3553L39.578 37.8566L41.0882 35.3121ZM35.478 36.2165L39.117 38.7178L37.6068 41.2623L33.9678 38.761L35.478 36.2165ZM37.1458 42.1236L33.5068 39.6222L31.9966 42.1668L35.6356 44.6681L37.1458 42.1236ZM31.5357 43.028L35.1747 45.5293L33.6644 48.0738L30.0254 45.5725L31.5357 43.028ZM59 29.659L49.4789 23.564L46.6385 28.1171L56.1597 34.2121L59 29.659ZM1.4731 38.6847L8.07828 37.5277L8.74151 41.4133L2.13632 42.5703L1.4731 38.6847ZM6.48973 42.9236L-0.863892 44.2117L-0.0800325 48.804L7.27359 47.516L6.48973 42.9236ZM11.158 54.7542L16.7635 53.7723L17.5643 58.4819L11.9588 59.4637L11.158 54.7542ZM20.6742 55.1238L18.4495 55.5135L19.2911 60.4445L21.5159 60.0548L20.6742 55.1238ZM10.5739 50.9223L16.1794 49.9405L16.6103 52.4646L11.0048 53.4465L10.5739 50.9223ZM13.1933 41.753L7.43286 42.7619L7.95474 45.8194L13.7151 44.8104L13.1933 41.753ZM33.1539 19.7053L39.3186 23.67L44.6979 20.5067L36.0861 15.0058L33.1539 19.7053Z" fill="#F2E9D1"/>
+<path d="M36.4537 60.2134C36.4537 60.2134 30.2306 56.2852 26.8326 54.1416C24.0489 52.3848 20.9943 50.7062 19.4177 47.6406C17.8955 44.6817 18.3398 41.0902 16.7587 38.1589C12.6212 30.4919 4.47529 37.486 -5 24.5343" stroke="#9FC9EA" stroke-width="4.50406" stroke-miterlimit="10"/>
+<path d="M3.3977 5.30361C3.81936 7.96405 5.61656 10.1856 8.06987 11.2259C18.6531 15.7113 29.7843 6.35129 16.652 2.3711C14.2822 1.6528 2.56442 0.0458454 3.3977 5.30361Z" fill="#9FC9EA"/>
+<path d="M29.0223 3.77122L21.8332 15.8876L1.31818 15.6591" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M56.1644 37.5062L21.8333 15.8876" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M56.1003 24.7941L27.6656 6.81461" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M57.3401 16.2298L39.1916 26.6208" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M46.1805 30.8461L34.2319 51.5145" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M38.6295 26.2763L26.6809 46.9448" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M27.4688 19.0841L20.0301 31.5339L24.8766 45.234L46.9589 59.3133" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M20.0301 31.5339L1.09275 24.1086L1.46362 14.9828" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+<path d="M25.5722 45.582L-3.97073 52.2679" stroke="white" stroke-width="1.35566" stroke-miterlimit="10"/>
+</g>
+<defs>
+<clipPath id="clip0_19_770">
+<rect width="54" height="54" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+</button>
         </div>
     </div>
 
@@ -177,9 +313,9 @@
 
             button.addEventListener('click', () => {
                 if (selectedLayer) {
-                    selectedLayer.classList.remove('selected');
+                    selectedLayer.parentNode.classList.remove('selected');
                 }
-                button.classList.add('selected');
+                buttonContainer.classList.add('selected');
                 selectedLayer = button;
 
                 const layerId = selectedLayer.getAttribute('data-layer');
@@ -213,13 +349,7 @@
 
             const swatches = document.getElementById('swatches');
             const colors = [
-                '#fff', '#eee', '#ddd', '#c4c4c4', '#2c2c2d', '#505050', '#767676', '#9e9e9e', '#c8c8c8',
-                '#0696ab', '#5caabb', '#83becb', '#a6d2dc', '#c9e7ec', '#ebfbfd', '#afcfff', '#c3d6ff', '#cdddff', '#d8e4ff', '#e2ebff', '#41b6c4', '#2c7fb8', '#253494',
-                '#06aa66', '#4bbc80', '#79cd9d', '#a0deba', '#c6eed7', '#eafef5', '#aedcbb', '#bae3c5', '#c8e8d0', '#e3f3e7', '#a1dab4', '#a6d96a', '#66bd63', '#1a9850', '#006837',
-                '#ffffcc', '#ffeda0', '#fed976', '#feb24c', '#fdae61', '#fee08b', '#d9ef8b', '#fedb9c', '#feeac3',
-                '#f9af0c', '#f7bf4a', '#fbcd74', '#f03b20', '#e31a1c', '#fc4e2a',
-                '#9b4203', '#af6534', '#c6875f', '#daaa8c', '#edceba', '#fdf3ea', '#a77843', '#b59163', '#c6a985', '#d7c1a7', '#e8dbcb', '#f8f5ef', '#8c510a',
-                '#bd0026', '#d73027', '#f46d43', '#f9b00d', '#fff9eb', '#feb24c'
+                '#fff', '#eee', '#ddd', '#c4c4c4', '#2c2c2d', '#505050', '#767676', '#9e9e9e', '#c8c8c8', '#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b'
             ];
 
             colors.forEach(color => {
@@ -271,6 +401,45 @@
         }
 
         document.getElementById('save-map-button').addEventListener('click', saveMapAsPNG);
+
+        function applyTheme(theme) {
+            const themes = {
+                'light-gray-canvas': {
+                    'contour': '#ececeb',
+                    'water': '#d2d6d6',
+                    'building': '#dedef0',
+                    'parks': '#e8ebe7',
+                    'road-simple': '#f0f1f0'
+                },
+                'world-topographic-map': {
+                    'contour': '#6a8d7d',
+                    'water': '#91afb8',
+                    'building': '#a2a786',
+                    'parks': '#5e6e7c',
+                    'road-simple': '#64757d'
+                },
+                'light-gray-canvas-alt': {
+                    'contour': '#fbf8f3',
+                    'water': '#b9dbf7',
+                    'building': '#ebe7dc',
+                    'parks': '#d0e4bb',
+                    'road-simple': '#f0f1f0'
+                },
+                'world-navigation-map': {
+                    'contour': '#e8e9d7',
+                    'water': '#afd5f5',
+                    'building': '#d0ccc1',
+                    'parks': '#c8eeac',
+                    'road-simple': '#f6f1e5'
+                }
+            };
+
+            const selectedTheme = themes[theme];
+            for (const layer in selectedTheme) {
+                map.setPaintProperty(layer, 'fill-color', selectedTheme[layer]);
+                updateLayerButtonColor(layer, selectedTheme[layer]);
+            }
+        }
     </script>
 
 </body>
